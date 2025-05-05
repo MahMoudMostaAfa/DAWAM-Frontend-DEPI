@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getJobs } from "@/utils/mockData";
 import Layout from "@/components/layout/Layout";
 import JobCard from "@/components/jobs/JobCard";
@@ -11,19 +11,20 @@ import { JobType } from "@/types/jobsType";
 const JOBS_PER_PAGE = 10;
 
 const Jobs = () => {
-  console.log("Jobs page loaded");
+  // console.log("Jobs page loaded");
   // const [jobs, setJobs] = useState<JobType[]>([]);
   // const [filteredJobs, setFilteredJobs] = useState<JobType[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams] = useSearchParams();
   const [filterTriggered, setFilterTriggered] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const { jobs, totalCount, isPending, isError } = useJobs();
 
   const totalPages = Math.ceil(totalCount / JOBS_PER_PAGE);
 
-  const totalShowedTillNow = currentPage * JOBS_PER_PAGE;
+  const totalShowedTillNow = Math.min(currentPage * JOBS_PER_PAGE, totalCount);
 
   // Get page from URL if available
 
@@ -39,11 +40,7 @@ const Jobs = () => {
     // Update URL with page parameter
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", page.toString());
-    window.history.pushState(
-      {},
-      "",
-      `${window.location.pathname}?${newParams.toString()}`
-    );
+    navigate(`?${newParams.toString()}`);
   };
 
   return (

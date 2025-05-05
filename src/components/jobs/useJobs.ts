@@ -39,15 +39,15 @@ export function useJobs() {
   if (searchParams.get("page")) {
     queryString += `PageNumber=${searchParams.get("page")}`;
   }
-  console.log(queryString);
 
+  // console.log(searchParams.has("page"));
+  // console.log(new URLSearchParams(useLocation().search));
   // console.log(searchParams.toString());
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["jobs", queryString],
     queryFn: () => getJobsApi(queryString),
     refetchOnWindowFocus: false,
-    retry: 1,
   });
 
   return {
