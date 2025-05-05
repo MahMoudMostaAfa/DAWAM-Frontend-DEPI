@@ -49,6 +49,7 @@ import { useAuth } from "@/context/authContext";
 import { useMutation } from "@tanstack/react-query";
 import { applyOnJob } from "@/services/applicationsServices";
 import { toast } from "sonner";
+import { useJobs } from "@/components/jobs/useJobs";
 const jobType = {
   0: "Full-time",
   1: "Part-time",
@@ -64,6 +65,7 @@ const JobDetails = () => {
   const { isLoading: isLoadingUser, user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const { job, isPending, isError } = useJobById(+id);
+  const { jobs, isPending: isPendingJobs } = useJobs();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [applicationData, setApplicationData] = useState({
@@ -437,42 +439,29 @@ const JobDetails = () => {
 
               <div className="space-y-4">
                 {/* Similar job items would go here. Using placeholders for now */}
-                {[1, 2, 3].map((item) => (
-                  <div
-                    key={item}
-                    className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0"
-                  >
-                    <h3 className="font-medium mb-1 text-dawam-dark-purple dark:text-white">
-                      {item === 1
-                        ? "UX Designer"
-                        : item === 2
-                        ? "Product Manager"
-                        : "Front-end Developer"}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-2">
-                      <span className="mr-3">
-                        {item === 1
-                          ? "Design Studio"
-                          : item === 2
-                          ? "Tech Solutions"
-                          : "Web Agency"}
-                      </span>
-                      <span>
-                        {item === 1
-                          ? "Remote"
-                          : item === 2
-                          ? "New York, NY"
-                          : "San Francisco, CA"}
-                      </span>
-                    </div>
-                    <Link
-                      to="/jobs/1"
-                      className="text-dawam-purple hover:underline text-sm"
+                {jobs
+                  .filter((job) => job.id !== +id)
+                  .slice(0, 3)
+                  .map((job) => (
+                    <div
+                      key={job.id}
+                      className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0"
                     >
-                      View Details
-                    </Link>
-                  </div>
-                ))}
+                      <h3 className="font-medium mb-1 text-dawam-dark-purple dark:text-white">
+                        {job.title}
+                      </h3>
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-2">
+                        <span className="mr-3">{job.categoryName}</span>
+                        <span>{job.location}</span>
+                      </div>
+                      <Link
+                        to={`/jobs/${job.id}`}
+                        className="text-dawam-purple hover:underline text-sm"
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

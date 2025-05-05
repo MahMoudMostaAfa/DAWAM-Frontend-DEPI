@@ -5,9 +5,11 @@ import Layout from "@/components/layout/Layout";
 import JobCard from "@/components/jobs/JobCard";
 import { useJobs } from "@/components/jobs/useJobs";
 import Spinner from "@/components/ui/Spinner";
+import { useAuth } from "@/context/authContext";
 
 const Index = () => {
   // Displaying only latest 3 jobs on homepage
+  const { isLoading, user } = useAuth();
   const { isPending, jobs } = useJobs();
   if (isPending) return <Spinner />;
   return (
@@ -28,14 +30,16 @@ const Index = () => {
                 Browse Jobs
               </Button>
             </Link>
-            <Link to="/signup">
-              <Button
-                variant="outline"
-                className="text-lg px-8 py-6 border-dawam-purple text-dawam-purple hover:bg-dawam-purple hover:text-white"
-              >
-                Create Account
-              </Button>
-            </Link>
+            {!user && !isLoading && (
+              <Link to="/signup">
+                <Button
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-dawam-purple text-dawam-purple hover:bg-dawam-purple hover:text-white"
+                >
+                  Create Account
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
