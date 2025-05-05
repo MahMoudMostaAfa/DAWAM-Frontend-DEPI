@@ -12,12 +12,21 @@ import {
 import { Label } from "@/components/ui/label";
 import { Search, Filter, X } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Category } from "@/types/applicationType";
+import { getCategories } from "@/services/applicationsServices";
+import Spinner from "../ui/Spinner";
 
 interface JobFilterProps {
   onFilterChange: () => void;
 }
 
 const JobFilter = ({ onFilterChange }: JobFilterProps) => {
+  const { data: categories, isPending } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    refetchOnWindowFocus: false,
+  });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [jobType, setJobType] = useState("");
@@ -41,6 +50,8 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
       handleFilterSubmit();
     }
   }, []);
+
+  if (isPending) return <Spinner />;
 
   const handleFilterToggle = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -178,7 +189,13 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="web-development">
+                    {categories?.map((cat: Category) => (
+                      <SelectItem key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                    {/* Uncomment and modify the following lines if you want to add static categories */}
+                    {/* <SelectItem value="web-development">
                       Web Development
                     </SelectItem>
                     <SelectItem value="mobile-development">
@@ -187,7 +204,7 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
                     <SelectItem value="ui-ux">UI/UX Design</SelectItem>
                     <SelectItem value="data-science">Data Science</SelectItem>
                     <SelectItem value="devops">DevOps</SelectItem>
-                    <SelectItem value="qa">Quality Assurance</SelectItem>
+                    <SelectItem value="qa">Quality Assurance</SelectItem> */}
                   </SelectGroup>
                 </SelectContent>
               </Select>
