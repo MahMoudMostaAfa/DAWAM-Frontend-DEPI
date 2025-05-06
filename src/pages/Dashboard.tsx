@@ -29,7 +29,6 @@ import { useDeleteJob } from "@/components/jobs/useDeleteJob";
 
 const Dashboard = () => {
   const { user, isLoading } = useAuth();
-  const [_, setIsLoading] = useState(true);
   const { data, isPending } = useQuery({
     queryKey: ["analysis"],
     queryFn: getAnalysis,

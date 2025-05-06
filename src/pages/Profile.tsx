@@ -15,9 +15,11 @@ import { getApplications } from "@/services/applicationsServices";
 import { ApplicationType } from "@/types/applicationType";
 import { formatDistanceToNow } from "date-fns";
 import { jobLevel, jobType } from "@/utils/DataMaps";
+import { usePayments } from "@/components/auth/usePayment";
 
 const Profile = () => {
   const { user, isLoading } = useAuth();
+  const { mutate, isPending: isPaying } = usePayments();
   const {
     data: applications,
     isPending,
@@ -302,6 +304,8 @@ const Profile = () => {
 
                       {!user.isPremium && (
                         <Button
+                          onClick={() => mutate()}
+                          disabled={isPaying}
                           className="w-full mt-4 bg-dawam-purple hover:bg-secondary-purple text-white"
                           // onClick={handleSubscribe}
                         >

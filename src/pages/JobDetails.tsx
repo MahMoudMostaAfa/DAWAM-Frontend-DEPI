@@ -50,6 +50,7 @@ import { useMutation } from "@tanstack/react-query";
 import { applyOnJob } from "@/services/applicationsServices";
 import { toast } from "sonner";
 import { useJobs } from "@/components/jobs/useJobs";
+import { usePremium } from "@/components/auth/usePremium";
 const jobType = {
   0: "Full-time",
   1: "Part-time",
@@ -84,9 +85,10 @@ const JobDetails = () => {
       toast.error(err.message);
     },
   });
+  const { data: premiumData, isPending: isLoadingPremium } = usePremium(+id);
   const [isPremium, setIsPremium] = useState(false);
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
-  const [careerLevelData, setCareerLevelData] = useState<any[]>([]);
+  // const [careerLevelData, setCareerLevelData] = useState<any[]>([]);
   const [averageExperience, setAverageExperience] = useState<number>(0);
   const [averageSalary, setAverageSalary] = useState<string>("");
   const isLoggedIn = user ? true : false;
@@ -121,6 +123,13 @@ const JobDetails = () => {
   if (isPending) {
     return <Spinner />;
   }
+  const careerLevelData = Object.entries(
+    premiumData?.careerLevelCounts || {}
+  ).map(([level, count]) => ({
+    name: level,
+    value: count,
+  }));
+  console.log(careerLevelData);
 
   if (!job) {
     return (
@@ -243,7 +252,7 @@ const JobDetails = () => {
                 )}
               </div>
 
-              {user && user?.isPremium ? (
+              {user && user?.isPremium && premiumData ? (
                 <div className="space-y-8">
                   {/* Career Level Distribution */}
                   <div>
@@ -279,8 +288,19 @@ const JobDetails = () => {
                       </ResponsiveContainer>
                     </div>
                   </div>
-
                   {/* Experience and Salary Stats */}
+                  <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+                    <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
+                      <Users size={18} className="mr-2" />
+                      total applications
+                    </h3>
+                    <div className="text-3xl font-bold text-dawam-purple">
+                      {premiumData.totalApplications}
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Annual salary based on market data
+                    </p>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
                       <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
@@ -289,7 +309,7 @@ const JobDetails = () => {
                       </h3>
                       <div className="flex items-center">
                         <div className="text-3xl font-bold text-dawam-purple">
-                          {averageExperience}
+                          {premiumData.avgYearsOfExperience}
                         </div>
                         <div className="text-xl ml-2 text-gray-600 dark:text-gray-300">
                           years
@@ -306,18 +326,17 @@ const JobDetails = () => {
                         Average Expected Salary
                       </h3>
                       <div className="text-3xl font-bold text-dawam-purple">
-                        {averageSalary}
+                        {premiumData.avgExpectedSalary}
                       </div>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Annual salary based on market data
+                        Based on applicant data for similar positions
                       </p>
                     </div>
                   </div>
-
                   <div className="text-sm text-gray-500 dark:text-gray-400 mt-4">
                     <p>
-                      This analysis is generated based on current market data
-                      and applicant information.
+                      This analysis is generated based on current applications
+                      of this job.
                     </p>
                   </div>
                 </div>
