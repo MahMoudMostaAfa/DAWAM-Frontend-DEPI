@@ -56,6 +56,7 @@ const Profile = () => {
             {isJobSeeker && (
               <>
                 <TabsTrigger value="applications">My Applications</TabsTrigger>
+                <TabsTrigger value="saved">My Saved Jobs</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
               </>
             )}
@@ -130,6 +131,103 @@ const Profile = () => {
                               </div>
 
                               <div className="mt-4 flex justify-end">
+                                <Link to={`/jobs/${app.jobId}`}>
+                                  <Button
+                                    variant="outline"
+                                    className="text-dawam-purple border-dawam-purple hover:bg-dawam-purple hover:text-white"
+                                  >
+                                    View Job
+                                  </Button>
+                                </Link>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10">
+                      <p className="text-gray-600 dark:text-gray-300 mb-4">
+                        You haven't applied to any jobs yet.
+                      </p>
+                      <Link to="/jobs">
+                        <Button className="bg-dawam-purple hover:bg-secondary-purple text-white">
+                          Browse Jobs
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+              <TabsContent value="saved">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold mb-6 text-dawam-dark-purple dark:text-white">
+                    Your saved Jobs
+                  </h2>
+
+                  {applications.length > 0 ? (
+                    <div className="space-y-6">
+                      {applications.map((app: ApplicationType) => (
+                        <Card key={app.id} className="overflow-hidden">
+                          <CardContent className="p-0">
+                            <div className="p-6">
+                              <div className="flex flex-col md:flex-row justify-between mb-4">
+                                <div>
+                                  <h3 className="text-lg font-semibold text-dawam-dark-purple dark:text-white mb-1">
+                                    {app.jobTitle}
+                                  </h3>
+                                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                                    <Building size={14} className="mr-1" />
+                                    <div>
+                                      <span className="font-medium">
+                                        Employer:
+                                      </span>{" "}
+                                      {app.posterName}
+                                    </div>
+                                    <Bolt size={14} className="mx-1" />
+                                    <div>
+                                      <span className="font-medium">
+                                        job type :
+                                      </span>
+                                      {jobType[app.jobType]}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <div className="flex items-start">
+                                  <Briefcase size={14} className="mr-2 mt-1" />
+                                  <div>
+                                    <span className="font-medium">
+                                      Career level:
+                                    </span>{" "}
+                                    {jobLevel[app.careerLevel]}
+                                  </div>
+                                </div>
+                                <div className="flex items-start">
+                                  <Clock size={14} className="mr-2 mt-1" />
+                                  <div>
+                                    <span className="font-medium">Posted:</span>{" "}
+                                    {formatDistanceToNow(
+                                      new Date(app.appliedAt),
+                                      {
+                                        addSuffix: true,
+                                      }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-4 flex gap-x-4 justify-end">
+                                <button>
+                                  <Button
+                                    variant="destructive"
+                                    className="text-white hover:bg-red-950 hover:text-white"
+                                  >
+                                    Remove
+                                  </Button>
+                                </button>
                                 <Link to={`/jobs/${app.jobId}`}>
                                   <Button
                                     variant="outline"

@@ -124,7 +124,14 @@ const ProfileForm = () => {
         <Button
           variant="outline"
           className="flex items-center gap-1 text-dawam-purple hover:bg-dawam-purple hover:text-white"
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={() => {
+            setIsEditing(!isEditing);
+            if (previewUrl !== profileData.profileImage) {
+              setPreviewUrl(
+                `${import.meta.env.VITE_HOST_URL}${profileData.profileImage}`
+              );
+            }
+          }}
         >
           {isEditing ? (
             <>
@@ -221,6 +228,7 @@ const ProfileForm = () => {
               onChange={handleInputChange}
               placeholder="johndoe@example.com"
               readOnly={true}
+              disabled={true}
               className={!isEditing ? "bg-gray-50 dark:bg-gray-700" : ""}
             />
           </div>

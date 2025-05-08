@@ -9,6 +9,7 @@ import { closeJob } from "@/services/applicationsServices";
 import { toast } from "sonner";
 import Spinner from "../ui/Spinner";
 import { useDeleteJob } from "./useDeleteJob";
+import { JobTypeColor } from "@/utils/DataMaps";
 
 interface JobCardProps {
   job: JobType;
@@ -19,6 +20,7 @@ const jobType = {
   1: "Part-time",
   2: "Remote",
 };
+
 const jobLevel = {
   0: "senior",
   1: "junior",
@@ -50,7 +52,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
           </div>
         </div>
         <div className="flex">
-          <Badge className="bg-dawam-purple hover:bg-dawam-purple text-white">
+          <Badge className={`text-white ${JobTypeColor[jobType[job.jobType]]}`}>
             {jobType[job.jobType]}
           </Badge>
         </div>
@@ -58,7 +60,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
 
       <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400">
         <Briefcase size={16} className="mr-1" />
-        <span className="mr-3">{jobLevel[job.careerLevel]}</span>
+        <span className={`mr-3 `}>{jobLevel[job.careerLevel]}</span>
         <Clock size={16} className="mr-1" />
         <span>Posted {formatDistanceToNow(new Date(job.createdAt))}</span>
       </div>
@@ -80,7 +82,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
         ) : null}
 
         <Link to={`/jobs/${job.id}`}>
-          <Button className="bg-dawam-purple hover:bg-secondary-purple text-white">
+          <Button className="bg-blue-500 hover:bg-blue-400 text-white">
             View Details
           </Button>
         </Link>

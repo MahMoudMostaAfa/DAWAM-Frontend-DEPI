@@ -19,6 +19,8 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./context/authContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { UseTop } from "./hooks/UseTop";
+import SharedProfile from "./pages/SharedProfile";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,50 +36,53 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route path="/jobs/:id" element={<JobDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute
-                  element={<Dashboard />}
-                  allowedRoles={["Admin"]}
-                />
-              }
-            />
-            <Route
-              path="/employer"
-              element={
-                <ProtectedRoute
-                  element={<EmployerDashboard />}
-                  allowedRoles={["JobPoster"]}
-                />
-              }
-            />
-            <Route path="/profile" element={<Profile />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <UseTop />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/jobs/:id" element={<JobDetails />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute
+                    element={<Dashboard />}
+                    allowedRoles={["Admin"]}
+                  />
+                }
+              />
+              <Route
+                path="/employer"
+                element={
+                  <ProtectedRoute
+                    element={<EmployerDashboard />}
+                    allowedRoles={["JobPoster"]}
+                  />
+                }
+              />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:slug" element={<SharedProfile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

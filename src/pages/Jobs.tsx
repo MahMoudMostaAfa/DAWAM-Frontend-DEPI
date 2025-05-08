@@ -30,6 +30,7 @@ const Jobs = () => {
 
   // Handle filter changes
   const handleFilterChange = () => {
+    setCurrentPage(1); // Reset to first page when filter changes
     setFilterTriggered((p) => !p);
   };
 

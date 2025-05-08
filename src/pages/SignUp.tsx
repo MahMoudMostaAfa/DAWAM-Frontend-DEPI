@@ -15,14 +15,13 @@ const SignUp = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "JobApplier", // Default role
+    role: "JobApplier",
   });
   // const [loading, setLoading] = useState(false);
   const { mutate, isPending, isError } = useSignUp();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,10 +50,20 @@ const SignUp = () => {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password =
+        "Password must contain at least one uppercase letter";
+    } else if (!/[^A-Za-z0-9]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one symbol";
     }
 
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
+    }
+    const lettersOnly = /^[A-Za-z\s]*$/;
+
+    if (!lettersOnly.test(formData.name)) {
+      newErrors.name = "Name should only contain letters";
     }
 
     setErrors(newErrors);
@@ -80,29 +89,6 @@ const SignUp = () => {
         },
       }
     );
-    // setLoading(true);
-
-    // // Simulate API call with delay
-    // setTimeout(() => {
-    //   // Create mock user
-    //   const newUser = {
-    //     id: Date.now(),
-    //     name: formData.name,
-    //     email: formData.email,
-    //     role: formData.role,
-    //   };
-
-    //   // Save to localStorage (in a real app, this would be a server call)
-    //   localStorage.setItem("dawamUser", JSON.stringify(newUser));
-
-    //   toast({
-    //     title: "Account created!",
-    //     description: "Welcome to DAWAM Careers Hub.",
-    //   });
-
-    //   navigate("/jobs");
-    //   setLoading(false);
-    // }, 1500);
   };
 
   return (

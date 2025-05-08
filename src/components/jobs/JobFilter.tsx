@@ -44,7 +44,7 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
     setCareerLevel(searchParams.get("level") || "");
     setCategory(searchParams.get("category") || "");
     setSortDate(searchParams.get("sort") || "");
-
+    // console.log([...searchParams.entries()]);
     // Apply filters on initial load if there are any params
     if ([...searchParams.entries()].length > 0) {
       handleFilterSubmit();
@@ -58,9 +58,8 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
   };
 
   const handleFilterSubmit = () => {
-    onFilterChange();
-
     // Update URL search params
+    onFilterChange();
     const params = new URLSearchParams();
     if (searchTerm) params.set("search", searchTerm);
     if (jobType) params.set("type", jobType);

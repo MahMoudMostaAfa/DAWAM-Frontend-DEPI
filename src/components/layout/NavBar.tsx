@@ -14,17 +14,32 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/context/authContext";
 import { useLogout } from "../auth/useLogout";
+import { json } from "stream/consumers";
+import { stringify } from "querystring";
+import { parse } from "path";
 
 const NavBar = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => JSON.parse(localStorage.getItem("isDark")) || false
+  );
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { mutate, isPending } = useLogout();
   const { user, isLoading } = useAuth();
-  // const [userData, setUserData] = useState<any>(null);
+
+  useEffect(() => {
+    const storedDarkMode = JSON.parse(localStorage.getItem("isDark"));
+    if (storedDarkMode) {
+      setIsDarkMode(storedDarkMode);
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
+    localStorage.setItem("isDark", JSON.stringify(!isDarkMode));
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle("dark");
   };
@@ -37,10 +52,6 @@ const NavBar = () => {
   // Handle logout
   const handleLogout = () => {
     mutate();
-
-    // localStorage.removeItem("dawamUser");
-    // setIsLoggedIn(false);
-    // setUserData(null);
   };
 
   // Determine which dashboard to show based on user role
@@ -175,11 +186,12 @@ const NavBar = () => {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    disabled={isPending}
                     onClick={handleLogout}
                     className="cursor-pointer text-red-500 focus:text-red-500"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>{isPending ? "Logging out .." : "Log out"} </span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -331,7 +343,7 @@ const NavBar = () => {
             >
               Contact
             </Link>
-            {!isLoggedIn && (
+            {!(user && !isLoading) && (
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" className="w-full mb-2">

@@ -7,7 +7,7 @@ export function useDeleteJob() {
   const { mutate, isPending } = useMutation({
     mutationFn: closeJob,
     onSuccess: () => {
-      clientQuery.invalidateQueries({ queryKey: ["myPostedJobs"] });
+      clientQuery.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Job closed successfully");
     },
     onError: (err) => {

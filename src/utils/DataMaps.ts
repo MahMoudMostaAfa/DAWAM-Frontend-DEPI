@@ -9,3 +9,9 @@ export const jobLevel = {
   2: "fresh",
   3: "internship",
 };
+export const JobTypeColor = {
+  "Full-time": "bg-blue-500",
+  // Add more job types and their corresponding colors as needed
+  "Part-time": "bg-green-500",
+  Remote: "bg-yellow-500",
+};

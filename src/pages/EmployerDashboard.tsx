@@ -247,6 +247,9 @@ const EmployerDashboard = () => {
 
                               <div className="flex justify-end space-x-3">
                                 <Button
+                                  onClick={() =>
+                                    (window.location.href = `mailto:${app.userEmail}?subject=Job Inquiry&body=Hi, I'm interested in your job Application.`)
+                                  }
                                   variant="outline"
                                   className="border-dawam-purple text-dawam-purple hover:bg-dawam-purple hover:text-white"
                                 >

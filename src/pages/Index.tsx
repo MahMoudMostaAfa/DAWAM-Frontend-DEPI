@@ -18,7 +18,11 @@ const Index = () => {
       <section className="bg-gradient-to-b from-white to-gray-100 dark:from-dawam-dark-purple dark:to-gray-900 py-20 px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-dawam-dark-purple dark:text-white">
-            Find Your <span className="text-dawam-purple">Dream Job</span> Today
+            Find Your{" "}
+            <span className="bg-gradient-to-r from-dawam-purple to-blue-900 text-transparent bg-clip-text">
+              Dream Job
+            </span>{" "}
+            Today
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Your gateway to career opportunities and professional growth. Browse

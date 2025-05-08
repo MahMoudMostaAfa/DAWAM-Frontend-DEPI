@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -28,12 +27,12 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          purple: "#9b87f5",
+          purple: "#2c579e",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          purple: "#7E69AB",
+          purple: "#2c579e",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -56,9 +55,9 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         dawam: {
-          purple: "#9b87f5",
+          purple: "#3b82f6",
           "dark-purple": "#1A1F2C",
-          "light-purple": "#D6BCFA",
+          "light-purple": "#2c579e",
           gray: "#8E9196",
           "dark-text": "#221F26",
           "light-text": "#F1F1F1",

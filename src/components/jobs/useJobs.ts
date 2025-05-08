@@ -14,7 +14,7 @@ const jobLevel = {
   internship: 3,
 };
 export function useJobs() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   let queryString = "";
 
   if (searchParams.get("search")) {

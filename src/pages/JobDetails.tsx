@@ -51,18 +51,18 @@ import { applyOnJob } from "@/services/applicationsServices";
 import { toast } from "sonner";
 import { useJobs } from "@/components/jobs/useJobs";
 import { usePremium } from "@/components/auth/usePremium";
-const jobType = {
-  0: "Full-time",
-  1: "Part-time",
-  2: "Remote",
-};
-const jobLevel = {
-  0: "senior",
-  1: "junior",
-  2: "fresh",
-  3: "internship",
-};
+import { jobLevel, jobType, JobTypeColor } from "@/utils/DataMaps";
+
 const JobDetails = () => {
+  async function ShareButton(textToCopy: string) {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      toast.success("Copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      toast.error("Failed to copy text.");
+    }
+  }
   const { isLoading: isLoadingUser, user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const { job, isPending, isError } = useJobById(+id);
@@ -129,7 +129,6 @@ const JobDetails = () => {
     name: level,
     value: count,
   }));
-  console.log(careerLevelData);
 
   if (!job) {
     return (
@@ -197,19 +196,32 @@ const JobDetails = () => {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="icon" className="h-9 w-9">
+                  <Button
+                    onClick={() => {
+                      ShareButton(
+                        `https://dawamdepi.netlify.app/jobs/${job.id}`
+                      );
+                    }}
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                  >
                     <Share2 className="h-4 w-4" />
                     <span className="sr-only">Share</span>
                   </Button>
-                  <Button variant="outline" size="icon" className="h-9 w-9">
-                    <Bookmark className="h-4 w-4" />
-                    <span className="sr-only">Save</span>
-                  </Button>
+                  {isLoggedIn && user?.roles[0] === "JobApplier" && (
+                    <Button variant="outline" size="icon" className="h-9 w-9">
+                      <Bookmark className="h-4 w-4" />
+                      <span className="sr-only">Save</span>
+                    </Button>
+                  )}
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2 mt-4 mb-6">
-                <Badge className="bg-dawam-purple text-white">
+                <Badge
+                  className={`text-white ${JobTypeColor[jobType[job.jobType]]}`}
+                >
                   {jobType[job.jobType]}
                 </Badge>
                 <Badge variant="outline">{jobLevel[job.careerLevel]}</Badge>

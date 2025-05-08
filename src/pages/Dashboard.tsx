@@ -46,7 +46,7 @@ const Dashboard = () => {
   const { mutate, isPending: isPendingDeleting } = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      toast.success("user deleted successfully");
+      toast.success("user deactivited successfully");
       clientqQuery.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (err: Error) => toast.error(err.message),
@@ -64,7 +64,6 @@ const Dashboard = () => {
   if (
     isLoading ||
     ((isPending || isPendingUsers) && user?.roles[0] == "Admin") ||
-    isPendingDeleting ||
     isJobPending
   ) {
     return <Spinner />;
@@ -137,7 +136,7 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell>
                           <Button
-                            disabled={!user.isActive}
+                            disabled={!user.isActive || isPendingDeleting}
                             variant="outline"
                             size="sm"
                             className="text-red-500 hover:bg-red-500 hover:text-white"
