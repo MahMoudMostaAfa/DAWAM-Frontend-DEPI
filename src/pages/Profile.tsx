@@ -51,7 +51,7 @@ const Profile = () => {
         </h1>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 overflow-x-auto max-w-full ">
             <TabsTrigger value="profile">Profile Information</TabsTrigger>
             {isJobSeeker && (
               <>
