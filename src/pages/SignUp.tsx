@@ -10,6 +10,7 @@ import AuthCard from "@/components/auth/AuthCard";
 import { useSignUp } from "@/components/auth/useSignUp";
 
 const SignUp = () => {
+  const isDemo = true;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -207,9 +208,10 @@ const SignUp = () => {
           <Button
             type="submit"
             className="w-full mt-2 bg-dawam-purple hover:bg-secondary-purple text-white"
-            disabled={isPending}
+            disabled={isPending || isDemo}
           >
-            {isPending ? "Creating Account..." : "Create Account"}
+            {isDemo ? "Not Available in Demo Mode" : "Create Account"}
+            {/* {isPending ? "Creating Account..." : "Create Account"} */}
           </Button>
 
           <div className="text-center mt-4">
