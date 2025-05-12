@@ -49,7 +49,7 @@ const Index = () => {
       </section>
 
       {/* Featured Jobs Section */}
-      <section className="py-16 px-4 bg-white dark:bg-gray-900">
+      <section className="py-16   lg:px-4 bg-white dark:bg-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-dawam-dark-purple dark:text-white">

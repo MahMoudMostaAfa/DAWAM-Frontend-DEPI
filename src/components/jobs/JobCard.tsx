@@ -36,7 +36,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
   if (isPending) return <Spinner />;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100 dark:border-gray-700">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start flex-wrap ">
         <div>
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-1">
             {job.title}
@@ -54,7 +54,8 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
             <span>{job.location}</span>
           </div>
         </div>
-        <div className="flex">
+
+        <div className="flex order-first md:order-last mb-2 md:mb-0">
           <Badge className={`text-white ${JobTypeColor[jobType[job.jobType]]}`}>
             {jobType[job.jobType]}
           </Badge>
