@@ -73,13 +73,13 @@ const NavBar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-dawam-dark-purple shadow-sm dark:shadow-gray-800 transition-all duration-300">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2  ">
           <img className="h-10 md:h-12 max-h-full" src="/lOGO.jpg" alt="log" />
           {/* <span className="text-2xl font-bold text-dawam-purple">DAWAM</span> */}
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className=" hidden md:flex items-center space-x-10 ml-36">
           <Link
             to="/"
             className="text-gray-700 dark:text-gray-300 hover:text-dawam-purple dark:hover:text-dawam-purple transition"
@@ -112,7 +112,7 @@ const NavBar = () => {
           </Link>
         </div>
 
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4 ">
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"

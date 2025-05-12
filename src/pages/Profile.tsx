@@ -16,10 +16,14 @@ import { ApplicationType } from "@/types/applicationType";
 import { formatDistanceToNow } from "date-fns";
 import { jobLevel, jobType } from "@/utils/DataMaps";
 import { usePayments } from "@/components/auth/usePayment";
+import { useSavedJobs } from "@/components/jobs/useSavedJobs";
+import { JobType } from "@/types/jobsType";
+import { useUnSaveJob } from "@/components/jobs/useUnSaveJob";
 
 const Profile = () => {
   const { user, isLoading } = useAuth();
   const { mutate, isPending: isPaying } = usePayments();
+  const { unSaveJob, isUnSaving } = useUnSaveJob();
   const {
     data: applications,
     isPending,
@@ -30,8 +34,12 @@ const Profile = () => {
     retry: false,
     enabled: !!user && user.roles[0] === "JobApplier",
   });
-
-  if (isLoading || (isPending && user?.roles[0] === "JobApplier")) {
+  const { savedJobs, isGettingSave } = useSavedJobs();
+  if (
+    isGettingSave ||
+    isLoading ||
+    (isPending && user?.roles[0] === "JobApplier")
+  ) {
     return <Spinner />;
   }
 
@@ -165,25 +173,25 @@ const Profile = () => {
                     Your saved Jobs
                   </h2>
 
-                  {applications.length > 0 ? (
+                  {savedJobs.length > 0 ? (
                     <div className="space-y-6">
-                      {applications.map((app: ApplicationType) => (
+                      {savedJobs.map((app: JobType) => (
                         <Card key={app.id} className="overflow-hidden">
                           <CardContent className="p-0">
                             <div className="p-6">
                               <div className="flex flex-col md:flex-row justify-between mb-4">
                                 <div>
                                   <h3 className="text-lg font-semibold text-dawam-dark-purple dark:text-white mb-1">
-                                    {app.jobTitle}
+                                    {app.title}
                                   </h3>
                                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                                    <Building size={14} className="mr-1" />
-                                    <div>
+                                    {/* <Building size={14} className="mr-1" /> */}
+                                    {/* <div>
                                       <span className="font-medium">
                                         Employer:
                                       </span>{" "}
                                       {app.posterName}
-                                    </div>
+                                    </div> */}
                                     <Bolt size={14} className="mx-1" />
                                     <div>
                                       <span className="font-medium">
@@ -210,7 +218,7 @@ const Profile = () => {
                                   <div>
                                     <span className="font-medium">Posted:</span>{" "}
                                     {formatDistanceToNow(
-                                      new Date(app.appliedAt),
+                                      new Date(app.createdAt),
                                       {
                                         addSuffix: true,
                                       }
@@ -222,13 +230,15 @@ const Profile = () => {
                               <div className="mt-4 flex gap-x-4 justify-end">
                                 <button>
                                   <Button
+                                    onClick={() => unSaveJob(app.id)}
+                                    disabled={isUnSaving}
                                     variant="destructive"
                                     className="text-white hover:bg-red-950 hover:text-white"
                                   >
                                     Remove
                                   </Button>
                                 </button>
-                                <Link to={`/jobs/${app.jobId}`}>
+                                <Link to={`/jobs/${app.id}`}>
                                   <Button
                                     variant="outline"
                                     className="text-dawam-purple border-dawam-purple hover:bg-dawam-purple hover:text-white"

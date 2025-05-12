@@ -149,11 +149,11 @@ const Login = () => {
           <div className="space-y-2 text-sm">
             <p className="text-gray-700 dark:text-gray-300">
               <span className="font-semibold">Job Seeker:</span>{" "}
-              mahmoud@gmail.com / @#&22552002Mahmoud
+              mahmoud@gmail.com / Mahmoud1234@
             </p>
             <p className="text-gray-700 dark:text-gray-300">
               <span className="font-semibold">Employer:</span> mahmoud@yahoo.com
-              / @#&22552002Mahmoud
+              / Mahmoud1234@
             </p>
             <p className="text-gray-700 dark:text-gray-300">
               <span className="font-semibold">Admin:</span> admin@dawam.com /

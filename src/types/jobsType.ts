@@ -4,9 +4,11 @@ export type JobType = {
   location: string;
   description: string;
   createdAt: Date;
-  isClosed: boolean;
+  isClosed?: boolean;
   jobType: number; // e.g., "Full-time", "Part-time", "Contract"
   careerLevel: number; // e.g., "Entry", "Mid", "Senior"
-  requirements: string;
+  requirements?: string;
   categoryName: string;
+  isApplied?: boolean;
+  isSaved?: boolean;
 };

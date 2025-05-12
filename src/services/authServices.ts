@@ -76,3 +76,13 @@ export async function updateUserProfile(formData: FormData) {
     throw new Error(errMessage);
   }
 }
+export async function getProfile(slug: string): Promise<UserType> {
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_HOST_URL}/api/Users/${slug}`
+    );
+    return res.data;
+  } catch (error) {
+    throw new Error("can not get profile");
+  }
+}

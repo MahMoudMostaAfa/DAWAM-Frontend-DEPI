@@ -15,8 +15,8 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-white to-gray-100 dark:from-dawam-dark-purple dark:to-gray-900 py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="bg-gradient-to-b from-white to-gray-100 dark:from-dawam-dark-purple dark:to-gray-900 py-20 px-4 h-[calc(100vh-60px)] flex items-center justify-center">
+        <div className="container  mx-auto text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-dawam-dark-purple dark:text-white">
             Find Your{" "}
             <span className="bg-gradient-to-r from-dawam-purple to-blue-900 text-transparent bg-clip-text">

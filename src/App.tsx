@@ -21,6 +21,7 @@ import { AuthProvider } from "./context/authContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { UseTop } from "./hooks/UseTop";
 import SharedProfile from "./pages/SharedProfile";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route
                 path="/dashboard"
                 element={

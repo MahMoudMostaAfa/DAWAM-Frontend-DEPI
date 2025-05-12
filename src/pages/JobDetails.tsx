@@ -52,6 +52,8 @@ import { toast } from "sonner";
 import { useJobs } from "@/components/jobs/useJobs";
 import { usePremium } from "@/components/auth/usePremium";
 import { jobLevel, jobType, JobTypeColor } from "@/utils/DataMaps";
+import { useSaveJob } from "@/components/jobs/useSaveJob";
+import { useUnSaveJob } from "@/components/jobs/useUnSaveJob";
 
 const JobDetails = () => {
   async function ShareButton(textToCopy: string) {
@@ -67,15 +69,14 @@ const JobDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { job, isPending, isError } = useJobById(+id);
   const { jobs, isPending: isPendingJobs } = useJobs();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [applicationData, setApplicationData] = useState({
     experience: "",
     yearsOfExperience: "",
     expectedSalary: "",
     cv: null as File | null,
   });
-
+  const { saveJob, isSavingJob } = useSaveJob();
+  const { isUnSaving, unSaveJob } = useUnSaveJob();
   const { isPending: isApplying, mutate } = useMutation({
     mutationFn: applyOnJob,
     onSuccess: () => {
@@ -88,9 +89,6 @@ const JobDetails = () => {
   const { data: premiumData, isPending: isLoadingPremium } = usePremium(+id);
   const [isPremium, setIsPremium] = useState(false);
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
-  // const [careerLevelData, setCareerLevelData] = useState<any[]>([]);
-  const [averageExperience, setAverageExperience] = useState<number>(0);
-  const [averageSalary, setAverageSalary] = useState<string>("");
   const isLoggedIn = user ? true : false;
   const navigate = useNavigate();
   const handleInputChange = (
@@ -210,7 +208,24 @@ const JobDetails = () => {
                     <span className="sr-only">Share</span>
                   </Button>
                   {isLoggedIn && user?.roles[0] === "JobApplier" && (
-                    <Button variant="outline" size="icon" className="h-9 w-9">
+                    <Button
+                      onClick={() => {
+                        if (job.isSaved) {
+                          unSaveJob(job.id);
+                        } else {
+                          saveJob(job.id);
+                        }
+                      }}
+                      disabled={isSavingJob || isUnSaving}
+                      variant="outline"
+                      size="icon"
+                      className={`h-9 w-9 ${
+                        job.isSaved
+                          ? "bg-orange-600 hover:bg-orange-800 text-white hover:text-white"
+                          : ""
+                      }
+                      `}
+                    >
                       <Bookmark className="h-4 w-4" />
                       <span className="sr-only">Save</span>
                     </Button>
@@ -247,217 +262,225 @@ const JobDetails = () => {
               </div>
             </div>
 
-            {/* Job Market Analysis Section - Premium Feature */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-dawam-dark-purple dark:text-white flex items-center">
-                  <BarChart2 size={20} className="mr-2" />
-                  Job Market Analysis
-                </h2>
-                {!isPremium && (
-                  <Badge
-                    variant="outline"
-                    className="text-yellow-500 border-yellow-500"
-                  >
-                    Premium Feature
-                  </Badge>
-                )}
-              </div>
+            {user && user?.roles[0] === "JobApplier" && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-dawam-dark-purple dark:text-white flex items-center">
+                    <BarChart2 size={20} className="mr-2" />
+                    Job Market Analysis
+                  </h2>
+                  {!isPremium && (
+                    <Badge
+                      variant="outline"
+                      className="text-yellow-500 border-yellow-500"
+                    >
+                      Premium Feature
+                    </Badge>
+                  )}
+                </div>
 
-              {user && user?.isPremium && premiumData ? (
-                <div className="space-y-8">
-                  {/* Career Level Distribution */}
-                  <div>
-                    <h3 className="font-semibold mb-4 text-dawam-dark-purple dark:text-white flex items-center">
-                      <Users size={18} className="mr-2" />
-                      Career Level Distribution
-                    </h3>
-                    <div className="h-[300px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={careerLevelData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) =>
-                              `${name}: ${(percent * 100).toFixed(0)}%`
-                            }
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {careerLevelData.map((entry, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                  {/* Experience and Salary Stats */}
-                  <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
-                    <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
-                      <Users size={18} className="mr-2" />
-                      total applications
-                    </h3>
-                    <div className="text-3xl font-bold text-dawam-purple">
-                      {premiumData.totalApplications}
-                    </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      Annual salary based on market data
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
-                      <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
-                        <TrendingUp size={18} className="mr-2" />
-                        Average Experience
+                {user && user?.isPremium && premiumData ? (
+                  <div className="space-y-8">
+                    {/* Career Level Distribution */}
+                    <div>
+                      <h3 className="font-semibold mb-4 text-dawam-dark-purple dark:text-white flex items-center">
+                        <Users size={18} className="mr-2" />
+                        Career Level Distribution
                       </h3>
-                      <div className="flex items-center">
-                        <div className="text-3xl font-bold text-dawam-purple">
-                          {premiumData.avgYearsOfExperience}
-                        </div>
-                        <div className="text-xl ml-2 text-gray-600 dark:text-gray-300">
-                          years
-                        </div>
+                      <div className="h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={careerLevelData}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({ name, percent }) =>
+                                `${name}: ${(percent * 100).toFixed(0)}%`
+                              }
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {careerLevelData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={COLORS[index % COLORS.length]}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Based on applicant data for similar positions
-                      </p>
                     </div>
-
+                    {/* Experience and Salary Stats */}
                     <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
                       <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
-                        <DollarSign size={18} className="mr-2" />
-                        Average Expected Salary
+                        <Users size={18} className="mr-2" />
+                        total applications
                       </h3>
                       <div className="text-3xl font-bold text-dawam-purple">
-                        {premiumData.avgExpectedSalary}
+                        {premiumData.totalApplications}
                       </div>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                        Based on applicant data for similar positions
+                        Annual salary based on market data
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+                        <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
+                          <TrendingUp size={18} className="mr-2" />
+                          Average Experience
+                        </h3>
+                        <div className="flex items-center">
+                          <div className="text-3xl font-bold text-dawam-purple">
+                            {premiumData.avgYearsOfExperience}
+                          </div>
+                          <div className="text-xl ml-2 text-gray-600 dark:text-gray-300">
+                            years
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          Based on applicant data for similar positions
+                        </p>
+                      </div>
+
+                      <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+                        <h3 className="font-semibold mb-2 text-dawam-dark-purple dark:text-white flex items-center">
+                          <DollarSign size={18} className="mr-2" />
+                          Average Expected Salary
+                        </h3>
+                        <div className="text-3xl font-bold text-dawam-purple">
+                          {premiumData.avgExpectedSalary}
+                        </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          Based on applicant data for similar positions
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                      <p>
+                        This analysis is generated based on current applications
+                        of this job.
                       </p>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-                    <p>
-                      This analysis is generated based on current applications
-                      of this job.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-700 p-8 rounded-lg">
-                    <Lock size={48} className="text-gray-400 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
-                      Unlock Job Market Analysis
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md">
-                      Get valuable insights on career level distribution,
-                      average experience years, and expected salary for this
-                      role.
-                    </p>
-                    <Button
-                      className="bg-dawam-purple hover:bg-secondary-purple text-white"
-                      onClick={() => setShowPremiumDialog(true)}
-                    >
-                      Upgrade to Premium
-                    </Button>
-                  </div>
+                ) : (
+                  <div>
+                    <div className="flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-700 p-8 rounded-lg">
+                      <Lock size={48} className="text-gray-400 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
+                        Unlock Job Market Analysis
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md">
+                        Get valuable insights on career level distribution,
+                        average experience years, and expected salary for this
+                        role.
+                      </p>
+                      <Button
+                        className="bg-dawam-purple hover:bg-secondary-purple text-white"
+                        onClick={() => setShowPremiumDialog(true)}
+                      >
+                        Upgrade to Premium
+                      </Button>
+                    </div>
 
-                  <Dialog
-                    open={showPremiumDialog}
-                    onOpenChange={setShowPremiumDialog}
-                  >
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Upgrade to Premium</DialogTitle>
-                        <DialogDescription>
-                          Get access to job market analysis, salary insights,
-                          and more premium features.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="py-4">
-                        <h3 className="font-semibold mb-2">Premium Benefits</h3>
-                        <ul className="space-y-2">
-                          <li className="flex items-start">
-                            <svg
-                              className="w-5 h-5 text-green-500 mr-2 mt-0.5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 13l4 4L19 7"
-                              ></path>
-                            </svg>
-                            <span>Career level distribution for each job</span>
-                          </li>
-                          <li className="flex items-start">
-                            <svg
-                              className="w-5 h-5 text-green-500 mr-2 mt-0.5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 13l4 4L19 7"
-                              ></path>
-                            </svg>
-                            <span>Average experience years of applicants</span>
-                          </li>
-                          <li className="flex items-start">
-                            <svg
-                              className="w-5 h-5 text-green-500 mr-2 mt-0.5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 13l4 4L19 7"
-                              ></path>
-                            </svg>
-                            <span>Expected salary insights</span>
-                          </li>
-                        </ul>
-                        <p className="mt-4 text-sm text-gray-600">
-                          Premium membership costs just $9.99/month.
-                        </p>
-                      </div>
-                      <DialogFooter>
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowPremiumDialog(false)}
-                        >
-                          Maybe Later
-                        </Button>
-                        <Link to="/profile">
-                          <Button className="bg-dawam-purple hover:bg-secondary-purple text-white">
-                            Go to Subscription Page
+                    <Dialog
+                      open={showPremiumDialog}
+                      onOpenChange={setShowPremiumDialog}
+                    >
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Upgrade to Premium</DialogTitle>
+                          <DialogDescription>
+                            Get access to job market analysis, salary insights,
+                            and more premium features.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4">
+                          <h3 className="font-semibold mb-2">
+                            Premium Benefits
+                          </h3>
+                          <ul className="space-y-2">
+                            <li className="flex items-start">
+                              <svg
+                                className="w-5 h-5 text-green-500 mr-2 mt-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 13l4 4L19 7"
+                                ></path>
+                              </svg>
+                              <span>
+                                Career level distribution for each job
+                              </span>
+                            </li>
+                            <li className="flex items-start">
+                              <svg
+                                className="w-5 h-5 text-green-500 mr-2 mt-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 13l4 4L19 7"
+                                ></path>
+                              </svg>
+                              <span>
+                                Average experience years of applicants
+                              </span>
+                            </li>
+                            <li className="flex items-start">
+                              <svg
+                                className="w-5 h-5 text-green-500 mr-2 mt-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 13l4 4L19 7"
+                                ></path>
+                              </svg>
+                              <span>Expected salary insights</span>
+                            </li>
+                          </ul>
+                          <p className="mt-4 text-sm text-gray-600">
+                            Premium membership costs just $9.99/month.
+                          </p>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowPremiumDialog(false)}
+                          >
+                            Maybe Later
                           </Button>
-                        </Link>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              )}
-            </div>
+                          <Link to="/profile">
+                            <Button className="bg-dawam-purple hover:bg-secondary-purple text-white">
+                              Go to Subscription Page
+                            </Button>
+                          </Link>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                )}
+              </div>
+            )}
+            {/* Job Market Analysis Section - Premium Feature */}
 
             {/* Similar Jobs Section */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
@@ -537,8 +560,11 @@ const JobDetails = () => {
               ) : isLoggedIn && user?.roles[0] === "JobApplier" ? (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="w-full mt-6 bg-dawam-purple hover:bg-secondary-purple text-white">
-                      Apply Now
+                    <Button
+                      disabled={job.isApplied}
+                      className="w-full mt-6 bg-dawam-purple hover:bg-secondary-purple text-white"
+                    >
+                      {job.isApplied ? "Already Applied" : "Apply Now"}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[500px]">

@@ -34,7 +34,9 @@ export type MyPostedJobApplication = {
   expectedSalary: number;
   phone: string;
   cvFilePath: string;
+  imagePath: string;
   appliedAt: Date;
+  slug: string;
 };
 export type Category = {
   id: number;

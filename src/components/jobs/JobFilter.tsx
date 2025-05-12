@@ -156,8 +156,8 @@ const JobFilter = ({ onFilterChange }: JobFilterProps) => {
                     <SelectItem value="full-time">Full-time</SelectItem>
                     <SelectItem value="part-time">Part-time</SelectItem>
                     <SelectItem value="remote">Remote</SelectItem>
-                    <SelectItem value="freelance">Freelance</SelectItem>
-                    <SelectItem value="internship">Internship</SelectItem>
+                    {/* <SelectItem value="freelance">Freelance</SelectItem> */}
+                    {/* <SelectItem value="internship">Internship</SelectItem> */}
                   </SelectGroup>
                 </SelectContent>
               </Select>

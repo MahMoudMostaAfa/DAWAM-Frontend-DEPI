@@ -21,7 +21,7 @@ export async function getJobsApi(queryString?: string): Promise<{
 }
 export async function getJobByIdApi(id: number): Promise<JobType> {
   try {
-    const res = await axios.get(
+    const res = await api.get(
       `${import.meta.env.VITE_HOST_URL}/api/jobs/${id}`
     );
     return res.data;
@@ -37,6 +37,18 @@ export async function deleteJob(id: number): Promise<void> {
     );
   } catch (err) {
     // console.error("Error fetching job:", err);
+    throw new Error("Failed to delete jobs");
+  }
+}
+export async function openJob(id: number): Promise<void> {
+  try {
+    const res = await api.put(
+      `${import.meta.env.VITE_HOST_URL}/api/jobs/${id}`,
+      {
+        isClosed: false,
+      }
+    );
+  } catch (err) {
     throw new Error("Failed to delete jobs");
   }
 }

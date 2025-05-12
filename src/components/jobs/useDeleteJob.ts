@@ -8,6 +8,7 @@ export function useDeleteJob() {
     mutationFn: closeJob,
     onSuccess: () => {
       clientQuery.invalidateQueries({ queryKey: ["jobs"] });
+      clientQuery.invalidateQueries({ queryKey: ["myPostedJobs"] });
       toast.success("Job closed successfully");
     },
     onError: (err) => {

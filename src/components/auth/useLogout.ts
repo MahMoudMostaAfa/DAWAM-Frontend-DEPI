@@ -14,6 +14,7 @@ export function useLogout() {
       // Handle successful logout (e.g., redirect to login page)
       clearToken();
       navigate("/login", { replace: true });
+      clientQuery.invalidateQueries();
       clientQuery.removeQueries();
       toast.success("Logged out successfully.");
     },

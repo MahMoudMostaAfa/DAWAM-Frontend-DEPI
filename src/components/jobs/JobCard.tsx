@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Spinner from "../ui/Spinner";
 import { useDeleteJob } from "./useDeleteJob";
 import { JobTypeColor } from "@/utils/DataMaps";
+import { useOpenJob } from "./useOpenJob";
 
 interface JobCardProps {
   job: JobType;
@@ -30,6 +31,8 @@ const jobLevel = {
 
 const JobCard = ({ job, showManageButton }: JobCardProps) => {
   const { mutate, isPending } = useDeleteJob();
+  const { openJob, isOpeningJob } = useOpenJob();
+
   if (isPending) return <Spinner />;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100 dark:border-gray-700">
@@ -72,9 +75,15 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
       <div className="mt-4 flex justify-end items-center">
         {showManageButton ? (
           <Button
-            disabled={isPending || job.isClosed}
+            disabled={isPending || isOpeningJob}
             variant={job.isClosed ? "outline" : "destructive"}
-            onClick={() => mutate(job.id)}
+            onClick={() => {
+              if (job.isClosed) {
+                openJob(job.id);
+              } else {
+                mutate(job.id);
+              }
+            }}
             className="mr-2"
           >
             {job.isClosed ? "Reopen Job" : "Close Job"}

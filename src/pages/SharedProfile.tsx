@@ -15,21 +15,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { getProfile } from "@/services/authServices";
+import { useParams } from "react-router-dom";
+import Spinner from "@/components/ui/Spinner";
 
 const SharedProfile = () => {
-  const profileData = {
-    fullName: "John Doe",
-    title: "Software Engineer",
-    email: "mahmoud2030@gmail",
-    phone: "+1 (123) 456-7890",
-    careerLevel: 0,
-    experienceYears: 3,
-    location: "Cairo, Egypt",
-    address: "18 Street, City Center",
-    imagePath: "",
-    summary:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  };
+  const { slug } = useParams();
+  const { isPending, data: profileData } = useQuery({
+    queryFn: () => getProfile(slug),
+    queryKey: ["profile", slug],
+    enabled: !!slug,
+  });
+  // const profileData = {
+  //   fullName: "John Doe",
+  //   title: "Software Engineer",
+  //   email: "mahmoud2030@gmail",
+  //   phone: "+1 (123) 456-7890",
+  //   careerLevel: 0,
+  //   experienceYears: 3,
+  //   location: "Cairo, Egypt",
+  //   address: "18 Street, City Center",
+  //   imagePath: "",
+  //   summary:
+  //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  // };
+  if (isPending) return <Spinner />;
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
@@ -57,7 +68,9 @@ const SharedProfile = () => {
                   <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 mb-3 group">
                     {profileData.imagePath ? (
                       <img
-                        src={profileData.imagePath}
+                        src={`${import.meta.env.VITE_HOST_URL}${
+                          profileData.imagePath
+                        }`}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
@@ -162,6 +175,7 @@ const SharedProfile = () => {
                   <Textarea
                     id="summary"
                     name="summary"
+                    value={profileData.bio}
                     placeholder="no summary available"
                     readOnly={true}
                     className={"bg-gray-50 dark:bg-gray-700 min-h-[120px]"}

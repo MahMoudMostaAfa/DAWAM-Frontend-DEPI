@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useJobs } from "@/components/jobs/useJobs";
 import { jobLevel, jobType } from "@/utils/DataMaps";
 import { useDeleteJob } from "@/components/jobs/useDeleteJob";
+import { useActiveUser } from "@/components/admin/useActiveUser";
 
 const Dashboard = () => {
   const { user, isLoading } = useAuth();
@@ -34,6 +35,7 @@ const Dashboard = () => {
     queryFn: getAnalysis,
     enabled: !!user,
   });
+  const { isActiviting, activeUser } = useActiveUser();
   const { isPending: isJobPending, jobs } = useJobs();
   const { data: users, isPending: isPendingUsers } = useQuery<UserAdminType[]>({
     queryKey: ["users"],
@@ -101,7 +103,7 @@ const Dashboard = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
+                      <TableHead>userName</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Role</TableHead>
@@ -136,13 +138,19 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell>
                           <Button
-                            disabled={!user.isActive || isPendingDeleting}
+                            disabled={isPendingDeleting || isActiviting}
                             variant="outline"
                             size="sm"
                             className="text-red-500 hover:bg-red-500 hover:text-white"
-                            onClick={() => mutate(user.id)}
+                            onClick={() => {
+                              if (user.isActive) {
+                                mutate(user.id);
+                              } else {
+                                activeUser(user.id);
+                              }
+                            }}
                           >
-                            deActivate
+                            {user.isActive ? "Deactivate" : "Activate"}
                           </Button>
                         </TableCell>
                       </TableRow>

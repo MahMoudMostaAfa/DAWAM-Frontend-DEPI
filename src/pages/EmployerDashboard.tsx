@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -18,8 +18,8 @@ import {
   Mail,
   Clock,
   FileText,
-  Link,
   Banknote,
+  Link as LinkIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/authContext";
@@ -31,6 +31,7 @@ import {
 } from "@/services/applicationsServices";
 import { MyPostedJob, MyPostedJobApplication } from "@/types/applicationType";
 import { formatDistanceToNow } from "date-fns";
+import { useOpenJob } from "@/components/jobs/useOpenJob";
 
 const EmployerDashboard = () => {
   const { user, isLoading } = useAuth();
@@ -158,25 +159,36 @@ const EmployerDashboard = () => {
                         {applications.map((app: MyPostedJobApplication) => (
                           <Card key={app.id}>
                             <CardContent className="p-6">
-                              <div className="flex flex-col md:flex-row justify-between mb-4">
-                                <div className="flex items-center">
-                                  <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden mr-4">
-                                    <div className="flex items-center justify-center w-full h-full text-gray-500">
-                                      <User size={24} />
+                              <Link to={`/profile/${app.slug}`}>
+                                <div className="flex flex-col md:flex-row justify-between mb-4">
+                                  <div className="flex items-center">
+                                    <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden mr-4">
+                                      <div className="flex items-center justify-center w-full h-full text-gray-500">
+                                        {app.imagePath ? (
+                                          <img
+                                            src={`${
+                                              import.meta.env.VITE_HOST_URL
+                                            }${app.imagePath}`}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                          />
+                                        ) : (
+                                          <User size={24} />
+                                        )}
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div>
-                                    <h3 className="font-semibold text-dawam-dark-purple dark:text-white">
-                                      {app.userFullName}
-                                    </h3>
-                                    <div className="flex text-sm text-gray-600  items-center dark:text-gray-300">
-                                      <Mail size={12} className="mr-1" />
-                                      <span>{app.userEmail}</span>
+                                    <div>
+                                      <h3 className="font-semibold text-dawam-dark-purple dark:text-white">
+                                        {app.userFullName}
+                                      </h3>
+                                      <div className="flex text-sm text-gray-600  items-center dark:text-gray-300">
+                                        <Mail size={12} className="mr-1" />
+                                        <span>{app.userEmail}</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-
+                              </Link>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
                                 <div className="flex items-start">
                                   <Phone size={14} className="mr-2 mt-1" />
@@ -240,7 +252,7 @@ const EmployerDashboard = () => {
                                     } `}
                                     target="_blank"
                                   >
-                                    <Link />
+                                    <LinkIcon />
                                   </a>
                                 </p>
                               </div>
