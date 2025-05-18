@@ -68,6 +68,7 @@ export async function addJob(job: JobType): Promise<void> {
       job
     );
   } catch (err) {
+    // console.log(err.response);
     throw new Error("Failed to add job | have no premsision");
   }
 }

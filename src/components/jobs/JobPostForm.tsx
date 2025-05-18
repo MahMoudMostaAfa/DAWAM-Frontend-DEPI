@@ -97,6 +97,15 @@ const JobPostForm = () => {
           ? filteredRequirements
           : ["No specific requirements"],
     };
+    // console.log({
+    //   title: jobData.title,
+    //   careerLevel: +jobData.level,
+    //   categoryId: +jobData.category,
+    //   description: jobData.description,
+    //   requirements: jobData.requirements.join(","),
+    //   jobType: +jobData.type,
+    //   location: jobData.location,
+    // });
     mutate(
       {
         title: jobData.title,

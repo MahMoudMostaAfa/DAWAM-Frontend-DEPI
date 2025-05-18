@@ -53,15 +53,6 @@ const Dashboard = () => {
     },
     onError: (err: Error) => toast.error(err.message),
   });
-  const handleDeleteUser = (userId: number) => {};
-
-  const handleDeleteJob = (jobId: number) => {};
-
-  const handleDeleteApplication = (applicationId: number) => {};
-  // Redirect if not logged in or not an admin
-  if (!isLoading && (!user || user.roles[0] !== "Admin")) {
-    return <Navigate to="/login" />;
-  }
 
   if (
     isLoading ||

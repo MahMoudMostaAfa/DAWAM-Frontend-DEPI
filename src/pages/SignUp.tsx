@@ -11,6 +11,7 @@ import { useSignUp } from "@/components/auth/useSignUp";
 
 const SignUp = () => {
   const isDemo = true;
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
