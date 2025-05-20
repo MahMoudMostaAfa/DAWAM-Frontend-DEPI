@@ -46,7 +46,7 @@ import { useJobById } from "@/components/jobs/useJobById";
 import { formatDistanceToNow } from "date-fns";
 import Spinner from "@/components/ui/Spinner";
 import { useAuth } from "@/context/authContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { applyOnJob } from "@/services/applicationsServices";
 import { toast } from "sonner";
 import { useJobs } from "@/components/jobs/useJobs";
@@ -77,10 +77,17 @@ const JobDetails = () => {
   });
   const { saveJob, isSavingJob } = useSaveJob();
   const { isUnSaving, unSaveJob } = useUnSaveJob();
+  const queryClient = useQueryClient();
   const { isPending: isApplying, mutate } = useMutation({
     mutationFn: applyOnJob,
     onSuccess: () => {
       toast.success("applied successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["myApplications"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["job"],
+      });
     },
     onError: (err: Error) => {
       toast.error(err.message);
@@ -111,7 +118,8 @@ const JobDetails = () => {
     formData.append("YearsOfExperience", applicationData.yearsOfExperience);
     formData.append("PreviousExperience", applicationData.experience);
     formData.append("ExpectedSalary", applicationData.expectedSalary);
-    formData.append("Phone", user?.phone);
+    formData.append("Phone", user?.phone ?? "01234567890");
+    console.log(formData.get("Phone"));
     formData.append("CVFile", applicationData.cv);
     mutate(formData, {
       onSuccess: () => navigate("/profile"),
@@ -650,7 +658,9 @@ const JobDetails = () => {
                 <div className="mt-6 space-y-3">
                   <Link to="/login">
                     <Button className="w-full bg-dawam-purple hover:bg-secondary-purple text-white">
-                      Login to Apply
+                      {isLoggedIn && user?.roles[0] === "JobPoster"
+                        ? "Login as Job seeker"
+                        : "Login to Apply"}
                     </Button>
                   </Link>
                   <p className="text-center text-sm text-gray-600 dark:text-gray-400">

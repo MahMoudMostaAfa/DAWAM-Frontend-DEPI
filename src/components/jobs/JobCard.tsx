@@ -35,7 +35,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
 
   if (isPending) return <Spinner />;
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100 dark:border-gray-700">
+    <div className="bg-white flex flex-col dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100 dark:border-gray-700">
       <div className="flex justify-between items-start flex-wrap flex-col md:flex-row ">
         <div>
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-1">
@@ -69,7 +69,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
         <span>Posted {formatDistanceToNow(new Date(job.createdAt))}</span>
       </div>
 
-      <div className="mt-4 text-gray-600 dark:text-gray-300 line-clamp-2">
+      <div className="mt-4 mb-auto text-gray-600 dark:text-gray-300 line-clamp-2">
         {job.description.substring(0, 150)}...
       </div>
 
@@ -92,7 +92,7 @@ const JobCard = ({ job, showManageButton }: JobCardProps) => {
         ) : null}
 
         <Link to={`/jobs/${job.id}`}>
-          <Button className="bg-blue-500 hover:bg-blue-400 text-white">
+          <Button className=" bg-blue-500 hover:bg-blue-400 text-white">
             View Details
           </Button>
         </Link>

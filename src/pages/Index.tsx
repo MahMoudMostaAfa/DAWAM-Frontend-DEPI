@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { jobs } from "@/utils/mockData";
 import Layout from "@/components/layout/Layout";
@@ -6,11 +6,20 @@ import JobCard from "@/components/jobs/JobCard";
 import { useJobs } from "@/components/jobs/useJobs";
 import Spinner from "@/components/ui/Spinner";
 import { useAuth } from "@/context/authContext";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const Index = () => {
-  // Displaying only latest 3 jobs on homepage
+  const [searchParam] = useSearchParams();
+  const navigate = useNavigate();
   const { isLoading, user } = useAuth();
   const { isPending, jobs } = useJobs();
+  useEffect(() => {
+    if (searchParam.has("session_id")) {
+      toast.success("Payment successful");
+      navigate("/");
+    }
+  }, [searchParam, navigate]);
   if (isPending) return <Spinner />;
   return (
     <Layout>

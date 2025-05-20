@@ -241,7 +241,10 @@ const ProfileForm = () => {
               name="phone"
               value={profileData.phone}
               onChange={handleInputChange}
-              placeholder="+1 (123) 456-7890"
+              placeholder="01XXXXXXXXX"
+              maxLength={11}
+              minLength={11}
+              type="tel"
               readOnly={!isEditing}
               className={!isEditing ? "bg-gray-50 dark:bg-gray-700" : ""}
             />

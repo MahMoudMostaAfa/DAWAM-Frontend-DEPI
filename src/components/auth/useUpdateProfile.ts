@@ -7,7 +7,10 @@ export function useUpdateProfile() {
   const { isPending, mutate } = useMutation({
     mutationFn: updateUserProfile,
     onSuccess: () => {
-      clientQuery.removeQueries();
+      clientQuery.invalidateQueries({
+        queryKey: ["me"],
+      });
+      // clientQuery.removeQueries();
       toast.success("profile updated successfully");
     },
     onError: () => {
