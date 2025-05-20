@@ -30,12 +30,13 @@ const JobPostForm = () => {
     },
     onError: () => toast.error("failed to add job"),
   });
+
   const [formData, setFormData] = useState({
     title: "",
     location: "",
     type: "0",
     level: "0",
-    category: "0",
+    category: "2",
     description: "",
     requirements: [""],
   });

@@ -336,7 +336,7 @@ const JobDetails = () => {
                         </h3>
                         <div className="flex items-center">
                           <div className="text-3xl font-bold text-dawam-purple">
-                            {premiumData.avgYearsOfExperience}
+                            {premiumData.avgYearsOfExperience.toFixed(1)}
                           </div>
                           <div className="text-xl ml-2 text-gray-600 dark:text-gray-300">
                             years
@@ -353,7 +353,7 @@ const JobDetails = () => {
                           Average Expected Salary
                         </h3>
                         <div className="text-3xl font-bold text-dawam-purple">
-                          {premiumData.avgExpectedSalary}
+                          {premiumData.avgExpectedSalary.toFixed(2)}
                         </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                           Based on applicant data for similar positions

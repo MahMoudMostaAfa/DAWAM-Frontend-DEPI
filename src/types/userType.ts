@@ -25,4 +25,5 @@ export type UserAdminType = {
   createdAt: Date;
   phone: string | null;
   role: string[];
+  slug: string;
 };

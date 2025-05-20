@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -104,7 +104,9 @@ const Dashboard = () => {
                   <TableBody>
                     {users.map((user: UserAdminType) => (
                       <TableRow key={user.id}>
-                        <TableCell>{user.id}</TableCell>
+                        <TableCell>
+                          <Link to={`/profile/${user.slug}`}>{user.slug}</Link>{" "}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center">
                             <span>{user.fullName}</span>
