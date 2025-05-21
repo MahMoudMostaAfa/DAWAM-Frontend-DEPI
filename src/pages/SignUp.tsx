@@ -10,7 +10,7 @@ import AuthCard from "@/components/auth/AuthCard";
 import { useSignUp } from "@/components/auth/useSignUp";
 
 const SignUp = () => {
-  const isDemo = false;
+  const isDemo = true;
 
   const [formData, setFormData] = useState({
     name: "",
